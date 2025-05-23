@@ -25,12 +25,12 @@ bool connected = false, run8 = false;
 
 class ClientCallbacks : public NimBLEClientCallbacks {
   void onConnect(NimBLEClient* pClient) override {
-    Serial.printf("Connected to: %s\n", pClient->getPeerAddress().toString().c_str());
+    Serial.printf("Connected to: %s\r\n", pClient->getPeerAddress().toString().c_str());
     connected = true;
   }
 
   void onDisconnect(NimBLEClient* pClient, int reason) override {
-    Serial.printf("%s Disconnected, reason = %d - Starting scan\n", pClient->getPeerAddress().toString().c_str(), reason);
+    Serial.printf("%s Disconnected, reason = %d - Starting scan\r\n", pClient->getPeerAddress().toString().c_str(), reason);
     NimBLEDevice::deleteClient(pClient);
     NimBLEDevice::getScan()->start(scanTimeMs);
     connected = online = false;
@@ -39,16 +39,16 @@ class ClientCallbacks : public NimBLEClientCallbacks {
 
 class ScanCallbacks : public NimBLEScanCallbacks {
   void onResult(const NimBLEAdvertisedDevice* advertisedDevice) override {
-    Serial.printf("Advertised Device found: %s\n", advertisedDevice->getName().c_str());
+    Serial.printf("Advertised Device found: %s\r\n", advertisedDevice->getName().c_str());
     if (advertisedDevice->haveName() && advertisedDevice->getName() == "BT+2.4G KB") {
-      Serial.printf("Found Our Device\n");
+      Serial.printf("Found Our Device\r\n");
 
       /** Async connections can be made directly in the scan callbacks */
       pClient = NimBLEDevice::getDisconnectedClient();
       if (!pClient) {
         pClient = NimBLEDevice::createClient(advertisedDevice->getAddress());
         if (!pClient) {
-          Serial.printf("Failed to create client\n");
+          Serial.printf("Failed to create client\r\n");
           return;
         }
       }
@@ -57,14 +57,14 @@ class ScanCallbacks : public NimBLEScanCallbacks {
       pClient->setClientCallbacks(&clientCallbacks, false);
       if (!pClient->connect(false, true, true)) {  // delete attributes, async connect, no MTU exchange
         NimBLEDevice::deleteClient(pClient);
-        Serial.printf("Failed to connect\n");
+        Serial.printf("Failed to connect\r\n");
         return;
       }
     }
   }
 
   void onScanEnd(const NimBLEScanResults& results, int reason) override {
-    Serial.printf("Scan Ended\n");
+    Serial.printf("Scan Ended\r\n");
     NimBLEDevice::getScan()->start(scanTimeMs);
   }
 } scanCallbacks;
@@ -75,7 +75,7 @@ void setup() {
   while (!Serial)
     ;
   setvbuf(stdout, (char*)NULL, _IONBF, 0); /* Disable stdout buffering */
-  Serial.printf("Starting NimBLE Async Client\n");
+  Serial.printf("\r\nStarting NimBLE Async Client\r\n");
   NimBLEDevice::init("Async-Client");
   NimBLEDevice::setPower(3); /** +3db */
   NimBLEDevice::setSecurityAuth(BLE_SM_PAIR_AUTHREQ_BOND | BLE_SM_PAIR_AUTHREQ_MITM | BLE_SM_PAIR_AUTHREQ_SC);
