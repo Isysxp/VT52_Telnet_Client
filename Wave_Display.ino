@@ -9,10 +9,10 @@ void ParseTelnet(WiFiClient TCPclient);
 void RawTelnet(WiFiClient TCPclient);
 #define GFX_DEV_DEVICE WAVESHARE_ESP32_S3_TFT_4_3
 #define GFX_BL 2
-const char* ssid = "RaspiAP";       // CHANGE TO YOUR WIFI SSID
-const char* password = "c531a3d358";  // CHANGE TO YOUR WIFI PASSWORD
+const char* ssid = "<>";       // CHANGE TO YOUR WIFI SSID
+const char* password = "<>";  // CHANGE TO YOUR WIFI PASSWORD
 const int serverPort = 23;
-const char* nhost = "192.168.1.227";
+const char* nhost = "<Your Hostname or IP Address>";
 int keepAlive=1000;  // Milliseconds
 
 
