@@ -20,7 +20,7 @@ Change line 43 in VT_Telnet_Client.ino to match the name of your BLE keyboard.<b
 This is not an ideal way to connect to BLE devices as they commonly do not have a name.<br>
 To check the system out I suggest you connect a terminal app to the USB port on the Waveshare board.<br>
 You should see a list of local advertising devices from which you can find the name of your keyboard if you are not too sure.<br>
-Also, you will need to set the SSID and password for you local router in Wave_Display.ino.<br>
+Also, you will need to set the SSID/password/DNS server for you local router in Wave_Display.ino.<br>
 With a bit of luck, the app will find your keyboard, attach to your router and connect to your host.<br>
 At this point, the login prompt will appear of the display.<br>
 CapsLock is an issue with my keyboard as I cannot control the LED. You will not that a blue square appears in the display to indicate this state.<br>
