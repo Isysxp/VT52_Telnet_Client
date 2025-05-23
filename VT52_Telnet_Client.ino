@@ -39,7 +39,7 @@ class ClientCallbacks : public NimBLEClientCallbacks {
 
 class ScanCallbacks : public NimBLEScanCallbacks {
   void onResult(const NimBLEAdvertisedDevice* advertisedDevice) override {
-    Serial.printf("Advertised Device found: %s\n", advertisedDevice->toString().c_str());
+    Serial.printf("Advertised Device found: %s\n", advertisedDevice->getName().c_str());
     if (advertisedDevice->haveName() && advertisedDevice->getName() == "BT+2.4G KB") {
       Serial.printf("Found Our Device\n");
 
@@ -93,7 +93,7 @@ void Decode(uint8_t* data, size_t length) {
   int caps = 0, skey = 1;
   std::vector<std::string> ref;
 
-  if (!data[ndx])
+  if (!data[ndx] || !length)
     return;
   while (data[ndx++])
     ;
@@ -121,7 +121,7 @@ void Decode(uint8_t* data, size_t length) {
     bfr[0] &= 0x1f;
   //Serial.print(bfr);
   SetChar(bfr);
-  fflush(stdout);
+  //fflush(stdout);
   lstkey = ndx;
   return;
 }

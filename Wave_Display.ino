@@ -9,10 +9,11 @@ void ParseTelnet(WiFiClient TCPclient);
 void RawTelnet(WiFiClient TCPclient);
 #define GFX_DEV_DEVICE WAVESHARE_ESP32_S3_TFT_4_3
 #define GFX_BL 2
-const char* ssid = "<>";       // CHANGE TO YOUR WIFI SSID
+const char* ssid = "<>";      // CHANGE TO YOUR WIFI SSID
 const char* password = "<>";  // CHANGE TO YOUR WIFI PASSWORD
+IPAddress dns(192,168,1,254); // CHANGE TO YOUR DNS SERVER ADDRESS
 const int serverPort = 23;
-const char* nhost = "<Your Hostname or IP Address>";
+const char* nhost = "pion1.local"; // YOU MAY NEED A QUALIFIED DOMAIN NAME HERE. MINE IS .LOCAL
 int keepAlive=1000;  // Milliseconds
 
 
@@ -62,6 +63,7 @@ int sz = 800 * 480 * 2;
 char cbuf=0;
 char lstc,*inchar=&cbuf;
 extern uint8_t cplock;
+IPAddress hip;
 
 hw_timer_t* Timer0_Cfg = NULL;
 
@@ -92,9 +94,9 @@ char bfr[128];
   gfx->setCursor(0, (lnum)*20);
 
   // Connect to Wi-Fi
-  WiFi.disconnect(true);
+  WiFi.disconnect(false);
   //Serial.flush();
-  delay(3000);
+  delay(1000);
   WiFi.useStaticBuffers(true);
   WiFi.setMinSecurity(WIFI_AUTH_WPA2_PSK);
   WiFi.setSleep(WIFI_PS_NONE);
@@ -104,12 +106,11 @@ char bfr[128];
     delay(1000);
     Serial.println("Connecting to WiFi...");
   }
-  WiFi.dnsIP();
   Serial.println("Connected to WiFi");
-  WiFi.config(WiFi.localIP(), WiFi.gatewayIP(), WiFi.subnetMask(), IPAddress(192,168,1,254)); 
+  delay(1000);
+  WiFi.config(WiFi.localIP(), WiFi.gatewayIP(), WiFi.subnetMask(), dns); 
   Serial.println("\e[?2lMode changed to VT52");
   Serial.println("IP address:" + WiFi.localIP().toString());
-  IPAddress hip(192,168,1,191);;
   WiFi.hostByName(nhost, hip);
   sprintf(bfr,"Connected to:%s\r\n",nhost);
   Display_String(bfr);
@@ -118,8 +119,6 @@ char bfr[128];
   TCPclient.connect(hip, serverPort);
   while (!TCPclient.connected())
     delay(10);
-
-
   Timer0_Cfg = timerBegin(1000000);
   timerAttachInterrupt(Timer0_Cfg, &Timer0_ISR);
   timerAlarm(Timer0_Cfg, 300000, true, 0);
